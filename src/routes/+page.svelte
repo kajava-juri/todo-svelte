@@ -1,5 +1,5 @@
 <script>
-    export const todos = [
+    export let todos = [
     {
         id: 1,
         title: "Buy groceries",
@@ -79,7 +79,7 @@
         editTodoValues = defaultTodoValues;
     }
 
-    function handleEditTaskInputChange(e){
+    function handleEditTodoInputChange(e){
         const { name, value, checked, type } = e.target;
 
         editTodoValues = {
@@ -88,29 +88,49 @@
         };
     };
 
+    function EditTodo(e){
+
+        e.preventDefault();
+
+        todos = todos.map(todo => {
+            if (todo.id == editTodoValues.id) {
+                return editTodoValues;
+            }
+            return todo;
+        })
+
+        editTodoValues = defaultTodoValues;
+
+        editModalOpen = false;
+    }
+
+    function handleDeleteButton(todoId){
+        todos = todos.filter( todo => todo.id !== todoId );
+    }
+
 </script>
 
 <ul>
     {#each todos as todo}
-        <li>
+        <li class="todoItem">
             <p>Id: {todo.id}</p>
             <p>Title: {todo.title}</p>
             <p>Description: {todo.description}</p>
             <p>Done: {todo.isDone ? " true" : " false"}</p> 
-            <button >Delete</button>
+            <button on:click={handleDeleteButton(todo.id)}>Delete</button>
             <button on:click={() => handleEditButton(todo)}>Edit</button>
         </li>
     {/each}
 </ul>
 
 <Modal open={editModalOpen} on:close={handleCloseModal}>
-    <form>
+    <form on:submit={EditTodo}>
 
         <label for="title">Title: </label>
-        <input type="text" name="title" value={editTodoValues.title}/>
+        <input type="text" name="title" value={editTodoValues.title} on:change={handleEditTodoInputChange}/>
 
         <label for="marked_as_done">Is done: </label>
-        <input type="checkbox" name="marked_as_done" checked={editTodoValues.isDone} />
+        <input type="checkbox" name="isDone" checked={editTodoValues.isDone} on:change={handleEditTodoInputChange}/>
 
         <input type="submit" value="Submit"/>
 
@@ -145,5 +165,14 @@
     
     input[type=submit]:hover {
         background-color: #45a049;
+    }
+
+    .todoItem{
+        margin-bottom: 16px;
+        padding: 8px;
+        border-bottom: solid orangered;
+    }
+    .todoItem:last-child{
+        border-bottom: none;
     }
 </style>
