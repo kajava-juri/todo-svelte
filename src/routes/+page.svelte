@@ -62,10 +62,16 @@
     }
     ];
 
+    let newTodoId = 11;
+
     import Modal from "../components/Modal.svelte";
+    import Layout from "./+layout.svelte";
+
+    const defaultTodoValues = {title: "", description: "", isDone: false};
+
+    let createTodoValues = defaultTodoValues;
 
     let editModalOpen = false;
-    const defaultTodoValues = {title: "", isDone: false}
     let editTodoValues = defaultTodoValues;
 
     function handleEditButton(todo){
@@ -108,7 +114,39 @@
         todos = todos.filter( todo => todo.id !== todoId );
     }
 
+    function AddTodo(e){
+        e.preventDefault();
+
+        console.log(createTodoValues);
+
+        todos = [...todos, {...createTodoValues, id: newTodoId, isDone: false}];
+
+        newTodoId++;
+        createTodoValues = defaultTodoValues;
+    }
+
+    function handleNewTodoInputChange(e){
+        const { name, value } = e.target;
+    
+        createTodoValues = {
+        ...createTodoValues,
+        [name]: value,
+        }
+    }
+
 </script>
+
+<form on:submit={AddTodo}>
+    <label for="title" style="color: white">Title</label>
+    <input name="title" value={createTodoValues.title} on:change={handleNewTodoInputChange} type="text" required="required"/>
+
+    <label for="description" style="color: white">Description</label>
+    <input name="description" value={createTodoValues.description} on:change={handleNewTodoInputChange} type="text" required="required"/>
+
+    <input type="submit" value="Submit"/>
+</form>
+
+<br/>
 
 <ul>
     {#each todos as todo}
