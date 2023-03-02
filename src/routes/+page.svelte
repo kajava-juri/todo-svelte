@@ -64,6 +64,7 @@
 
     let newTodoId = 11;
 
+    import { invalid_attribute_name_character, update_await_block_branch } from "svelte/internal";
     import Modal from "../components/Modal.svelte";
     import Layout from "./+layout.svelte";
 
@@ -77,7 +78,6 @@
     function handleEditButton(todo){
         editModalOpen = true;
         editTodoValues = {...todo}
-        console.log(editTodoValues);
     }
 
     function handleCloseModal(){
@@ -117,8 +117,6 @@
     function AddTodo(e){
         e.preventDefault();
 
-        console.log(createTodoValues);
-
         todos = [...todos, {...createTodoValues, id: newTodoId, isDone: false}];
 
         newTodoId++;
@@ -133,8 +131,86 @@
         [name]: value,
         }
     }
+    //=============================================================================================================================
+    //The bouncing todo items
+    //=============================================================================================================================
+    let parent;
+    let todoItems = [];
 
+    let width;
+    let height;
+
+    function initiate(){
+        for (let i = 0; i < todoItems.length; i++) {
+            const todoItem = todoItems[i];
+            if(todoItem === null) break;
+            let cloned = todoItem.cloneNode(true);
+            let { bottom, right, left, top } = todoItem.getBoundingClientRect()
+            todoItem.style.visibility = "hidden";
+
+            let x = left;
+            let y = top;
+
+            cloned.setAttribute("class", "clonedItem")
+            cloned.setAttribute("data-xspeed", 10);
+            cloned.setAttribute("data-yspeed", 10);
+            cloned.setAttribute("data-x", x);
+            cloned.setAttribute("data-y", y);
+            cloned.style.width = "fit-content";
+            cloned.style.position = "absolute";
+            cloned.style.left = left + "px";
+            cloned.style.top = top + "px";
+
+            parent.appendChild(cloned);
+
+        }
+
+        clonedItems = document.getElementsByClassName("clonedItem");
+
+        start();
+    }
+
+
+    let clonedItems = []
+
+    function update(){
+        for (let j = 0; j < clonedItems.length; j++) {
+            const cloned = clonedItems[j];
+
+            let { x, y, xspeed, yspeed } = cloned.dataset;
+
+            let temp = cloned;
+
+            cloned.style.left = parseInt(x) + parseInt(xspeed) + "px";
+            cloned.setAttribute("data-x", parseInt(x) + parseInt(xspeed));
+
+            cloned.style.top = parseInt(y) + parseInt(yspeed) + "px";
+            cloned.setAttribute("data-y", parseInt(y) + parseInt(yspeed));
+
+            checkHitBox(cloned);
+
+        }
+    }
+    function checkHitBox(element) {
+        let { bottom, right, left, top } = element.getBoundingClientRect();
+        let xspeed = parseInt(element.dataset.xspeed);
+        let yspeed = parseInt(element.dataset.yspeed);
+        if (right >= width || left <= 0) {
+            element.setAttribute("data-xspeed", xspeed *= -1);
+        }
+
+        if (bottom >= height || top <= 0) {
+            element.setAttribute("data-yspeed", yspeed *= -1);
+        }
+    }
+
+    function start(){
+        setInterval(() => update(), 20)
+    }
 </script>
+
+
+<svelte:window bind:innerHeight={height} bind:innerWidth={width}/>
 
 <form on:submit={AddTodo}>
     <label for="title" style="color: white">Title</label>
@@ -148,9 +224,11 @@
 
 <br/>
 
-<ul>
-    {#each todos as todo}
-        <li class="todoItem">
+<button on:click={initiate} class="btn btn-danger btn-lg">Send todo items flying</button>
+
+<ul bind:this={parent}>
+    {#each todos as todo, index}
+        <li class="todoItem" bind:this={todoItems[index]}>
             <p>Id: {todo.id}</p>
             <p>Title: {todo.title}</p>
             <p>Description: {todo.description}</p>
@@ -158,6 +236,9 @@
             <button on:click={handleDeleteButton(todo.id)}>Delete</button>
             <button on:click={() => handleEditButton(todo)}>Edit</button>
         </li>
+    {/each}
+    {#each clonedItems as clonedItem}
+        {clonedItem}
     {/each}
 </ul>
 
