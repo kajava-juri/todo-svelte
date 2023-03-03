@@ -166,8 +166,11 @@
             parent.appendChild(cloned);
 
         }
+        
+        todos = [];
 
         clonedItems = document.getElementsByClassName("clonedItem");
+        console.log(clonedItems);
 
         start();
     }
@@ -203,8 +206,15 @@
         }
     }
 
+    let started = false;
+
     function start(){
-        setInterval(() => update(), 20)
+
+        if(!started){
+            start = true;
+            setInterval(() => update(), 20)
+        }
+
     }
 </script>
 
@@ -235,9 +245,6 @@
             <button on:click={handleDeleteButton(todo.id)}>Delete</button>
             <button on:click={() => handleEditButton(todo)}>Edit</button>
         </li>
-    {/each}
-    {#each clonedItems as clonedItem}
-        {clonedItem}
     {/each}
 </ul>
 
