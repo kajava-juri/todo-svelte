@@ -150,17 +150,19 @@
 
             let x = left;
             let y = top;
+            let xspeed = (Math.random() * 10) * (Math.random() < 0.5 ? -1 : 1);
+            let yspeed = Math.random() * 10 * (Math.random() < 0.5 ? -1 : 1);
 
-            cloned.setAttribute("class", "clonedItem")
-            cloned.setAttribute("data-xspeed", 10);
-            cloned.setAttribute("data-yspeed", 10);
+            cloned.setAttribute("class", "clonedItem");
+            cloned.setAttribute("data-xspeed", xspeed);
+            cloned.setAttribute("data-yspeed", yspeed);
             cloned.setAttribute("data-x", x);
             cloned.setAttribute("data-y", y);
-            cloned.style.width = "fit-content";
             cloned.style.position = "absolute";
             cloned.style.left = left + "px";
             cloned.style.top = top + "px";
 
+            todoItem.removeAttribute("id");
             parent.appendChild(cloned);
 
         }
@@ -172,14 +174,11 @@
 
 
     let clonedItems = []
-
     function update(){
         for (let j = 0; j < clonedItems.length; j++) {
             const cloned = clonedItems[j];
 
             let { x, y, xspeed, yspeed } = cloned.dataset;
-
-            let temp = cloned;
 
             cloned.style.left = parseInt(x) + parseInt(xspeed) + "px";
             cloned.setAttribute("data-x", parseInt(x) + parseInt(xspeed));
@@ -228,7 +227,7 @@
 
 <ul bind:this={parent}>
     {#each todos as todo, index}
-        <li class="todoItem" bind:this={todoItems[index]}>
+        <li class="todoItem" bind:this={todoItems[index]} id="{todo.id}">
             <p>Id: {todo.id}</p>
             <p>Title: {todo.title}</p>
             <p>Description: {todo.description}</p>
