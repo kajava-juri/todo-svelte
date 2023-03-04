@@ -112,6 +112,8 @@
 
     function handleDeleteButton(todoId){
         todos = todos.filter( todo => todo.id !== todoId );
+        setTimeout(()=>{console.log(todoHtmlCollection);}, 50)
+
     }
 
     function AddTodo(e){
@@ -136,6 +138,7 @@
     //=============================================================================================================================
     let parent;
     let todoItems = [];
+    let todoHtmlCollection = [];
 
     let width;
     let height;
@@ -144,53 +147,48 @@
         for (let i = 0; i < todoItems.length; i++) {
             const todoItem = todoItems[i];
             if(todoItem === null) break;
-            let cloned = todoItem.cloneNode(true);
+            todoItem.style.width = "fit-content";
             let { bottom, right, left, top } = todoItem.getBoundingClientRect()
-            todoItem.style.visibility = "hidden";
 
             let x = left;
             let y = top;
             let xspeed = (Math.random() * 10) * (Math.random() < 0.5 ? -1 : 1);
             let yspeed = Math.random() * 10 * (Math.random() < 0.5 ? -1 : 1);
 
-            cloned.setAttribute("class", "clonedItem");
-            cloned.setAttribute("data-xspeed", xspeed);
-            cloned.setAttribute("data-yspeed", yspeed);
-            cloned.setAttribute("data-x", x);
-            cloned.setAttribute("data-y", y);
-            cloned.style.whiteSpace = "nowrap";
-            cloned.style.position = "absolute";
-            cloned.style.left = left + "px";
-            cloned.style.top = top + "px";
-
-            todoItem.removeAttribute("id");
-            parent.appendChild(cloned);
-
+            todoItem.setAttribute("data-xspeed", xspeed);
+            todoItem.setAttribute("data-yspeed", yspeed);
+            todoItem.setAttribute("data-x", x);
+            todoItem.setAttribute("data-y", y);
+            todoItem.style.whiteSpace = "nowrap";
+            todoItem.style.left = left + "px";
+            todoItem.style.top = top + "px";
         }
-        
-        todos = [];
 
-        clonedItems = document.getElementsByClassName("clonedItem");
-        console.log(clonedItems);
+        //this loop is to set absolute position after coordinates have been set
+        //Because otherwise the elements will move up and the next element will have the same coordinates and they will stack up in the same position
+        for (let i = 0; i < todoItems.length; i++) {
+            todoItems[i].style.position = "absolute";
+        }
 
-        start();
+        todoHtmlCollection = document.getElementsByClassName("todoItem");
+        console.log(todoHtmlCollection);
+
+        //start();
     }
 
-
-    let clonedItems = []
     function update(){
-        for (let j = 0; j < clonedItems.length; j++) {
-            const cloned = clonedItems[j];
+        for (let j = 0; j < todoHtmlCollection.length; j++) {
+            const todo = todoHtmlCollection[j];
 
-            let { x, y, xspeed, yspeed } = cloned.dataset;
+            let { x, y, xspeed, yspeed } = todo.dataset;
 
-            cloned.style.left = parseInt(x) + parseInt(xspeed) + "px";
-            cloned.setAttribute("data-x", parseInt(x) + parseInt(xspeed));
+            todo.style.left = parseInt(x) + parseInt(xspeed) + "px";
+            todo.setAttribute("data-x", parseInt(x) + parseInt(xspeed));
 
-            cloned.style.top = parseInt(y) + parseInt(yspeed) + "px";
-            cloned.setAttribute("data-y", parseInt(y) + parseInt(yspeed));
+            todo.style.top = parseInt(y) + parseInt(yspeed) + "px";
+            todo.setAttribute("data-y", parseInt(y) + parseInt(yspeed));
 
-            checkHitBox(cloned);
+            checkHitBox(todo);
 
         }
     }
@@ -303,7 +301,8 @@
         border-bottom: none;
     }
 
-    .clonedItem{
-        white-space: nowrap;
+    :global(.positionAbsolute){
+        position: absolute;
     }
+
 </style>
