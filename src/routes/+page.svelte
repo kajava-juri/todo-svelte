@@ -233,7 +233,7 @@
 <br/>
 
 <button on:click={initiate} class="btn btn-danger btn-lg">Send todo items flying</button>
-<button on:click={update} class="btn btn-warning btn-lg" style="z-index: 1; position:absolute; ">Update</button>
+<!-- <button on:click={update} class="btn btn-warning btn-lg" style="z-index: 1; position:absolute; ">Update</button> -->
 
 <ul bind:this={parent}>
     {#each todos as todo, index}
