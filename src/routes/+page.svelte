@@ -173,7 +173,7 @@
         todoHtmlCollection = document.getElementsByClassName("todoItem");
         console.log(todoHtmlCollection);
 
-        //start();
+        start();
     }
 
     function update(){
@@ -237,7 +237,7 @@
 
 <ul bind:this={parent}>
     {#each todos as todo, index}
-        <li class="todoItem" bind:this={todoItems[index]} id="{todo.id}">
+        <li class="todoItem {started ? "positionAbsolute" : ""}" bind:this={todoItems[index]} id="{todo.id}">
             <p>Id: {todo.id}</p>
             <p>Title: {todo.title}</p>
             <p>Description: {todo.description}</p>
