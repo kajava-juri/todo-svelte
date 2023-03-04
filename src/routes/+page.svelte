@@ -158,6 +158,7 @@
             cloned.setAttribute("data-yspeed", yspeed);
             cloned.setAttribute("data-x", x);
             cloned.setAttribute("data-y", y);
+            cloned.style.whiteSpace = "nowrap";
             cloned.style.position = "absolute";
             cloned.style.left = left + "px";
             cloned.style.top = top + "px";
@@ -234,6 +235,7 @@
 <br/>
 
 <button on:click={initiate} class="btn btn-danger btn-lg">Send todo items flying</button>
+<button on:click={update} class="btn btn-warning btn-lg" style="z-index: 1; position:absolute; ">Update</button>
 
 <ul bind:this={parent}>
     {#each todos as todo, index}
@@ -299,5 +301,9 @@
     }
     .todoItem:last-child{
         border-bottom: none;
+    }
+
+    .clonedItem{
+        white-space: nowrap;
     }
 </style>
