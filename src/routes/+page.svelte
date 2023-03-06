@@ -172,6 +172,7 @@
         //this loop is to set absolute position after coordinates have been set
         //Because otherwise the elements will move up and the next element will have the same coordinates and they will stack up in the same position
         for (let i = 0; i < todoItems.length; i++) {
+            if(todoItems[i] === null) break;
             todoItems[i].style.position = "absolute";
         }
 
@@ -247,8 +248,8 @@
             <p>Title: {todo.title}</p>
             <p>Description: {todo.description}</p>
             <p>Done: {todo.isDone ? " true" : " false"}</p> 
-            <button on:click={handleDeleteButton(todo.id)}>Delete</button>
-            <button on:click={() => handleEditButton(todo)}>Edit</button>
+            <button class="btn btn-danger" on:click={handleDeleteButton(todo.id)}>Delete</button>
+            <button class="btn btn-secondary" on:click={() => handleEditButton(todo)}>Edit</button>
         </li>
     {/each}
 </ul>
