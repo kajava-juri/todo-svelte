@@ -111,9 +111,12 @@
     }
 
     function handleDeleteButton(todoId){
-        todos = todos.filter( todo => todo.id !== todoId );
-        setTimeout(()=>{console.log(todoHtmlCollection);}, 50)
-
+        if(started){
+            document.getElementById(todoId).remove();
+        } else {
+            todos = todos.filter( todo => todo.id !== todoId );
+        }
+        //setTimeout(()=>{console.log(todoHtmlCollection);}, 50)
     }
 
     function AddTodo(e){
@@ -147,8 +150,10 @@
         for (let i = 0; i < todoItems.length; i++) {
             const todoItem = todoItems[i];
             if(todoItem === null) break;
+            if(todoItem.classList.contains("bouncing")) continue;
+            todoItem.classList.add("bouncing");
             todoItem.style.width = "fit-content";
-            let { bottom, right, left, top } = todoItem.getBoundingClientRect()
+            let { left, top } = todoItem.getBoundingClientRect()
 
             let x = left;
             let y = top;
@@ -171,7 +176,6 @@
         }
 
         todoHtmlCollection = document.getElementsByClassName("todoItem");
-        console.log(todoHtmlCollection);
 
         start();
     }
@@ -210,7 +214,7 @@
     function start(){
 
         if(!started){
-            start = true;
+            started = true;
             setInterval(() => update(), 20)
         }
 
@@ -235,9 +239,10 @@
 <button on:click={initiate} class="btn btn-danger btn-lg">Send todo items flying</button>
 <!-- <button on:click={update} class="btn btn-warning btn-lg" style="z-index: 1; position:absolute; ">Update</button> -->
 
-<ul bind:this={parent}>
+
+<ul>
     {#each todos as todo, index}
-        <li class="todoItem {started ? "positionAbsolute" : ""}" bind:this={todoItems[index]} id="{todo.id}">
+        <li class="todoItem" bind:this={todoItems[index]} id="{todo.id}">
             <p>Id: {todo.id}</p>
             <p>Title: {todo.title}</p>
             <p>Description: {todo.description}</p>
