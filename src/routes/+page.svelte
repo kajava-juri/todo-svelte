@@ -249,7 +249,7 @@
             <p>Description: {todo.description}</p>
             <p>Done: {todo.isDone ? " true" : " false"}</p> 
             <button class="btn btn-danger" on:mousedown={handleDeleteButton(todo.id)}>Delete</button>
-            <button class="btn btn-secondary" on:click={() => handleEditButton(todo)}>Edit</button>
+            <button class="btn btn-secondary" on:mousedown={() => handleEditButton(todo)}>Edit</button>
         </li>
     {/each}
 </ul>
